@@ -17,50 +17,50 @@ class BaseModel(Model):
 
 
 class Guest(BaseModel):
-    '''Класс .'''
-    id = AutoField()
-    first_name = CharField(max_length=100)
-    last_name = CharField(max_length=100)
-    email = CharField(max_length=255)
-    phone = CharField(max_length=15)
+    '''Класс гости .'''
+    id = AutoField()  # id гостя
+    first_name = CharField(max_length=100)  # имя
+    last_name = CharField(max_length=100)  # фамилия
+    email = CharField(max_length=255)  # почта
+    phone = CharField(max_length=15)  # телефон
 
 
 class Applications(BaseModel):
-    ''' kjkj'''
-    id = AutoField()
-    guest = ForeignKeyField(Guest, backref='aplications')
-    apllication_date = DateField()
+    ''' заявки'''
+    id = AutoField()  # id
+    guest = ForeignKeyField(Guest, backref='aplications')  # id гостя
+    apllication_date = DateField()  # дата подачи заявки
     status = CharField(max_length=15, choices=[('Подана', 'Подана'),
                                                ('Обработанна', 'Обработанна'),
-                                               ('Откланена', 'Откланена')])
-    visit_date = DateField()
+                                               ('Откланена', 'Откланена')])  # статус заявки
+    visit_date = DateField()  # дата посещения
 
 
 class Employees(BaseModel):
-    ''' jkjk'''
-    id = AutoField()
-    first_name = CharField(max_length=100)
-    last_name = CharField(max_length=100)
-    departament = CharField(max_length=100)
+    ''' Сотрудники'''
+    id = AutoField()  # id
+    first_name = CharField(max_length=100)  # имя
+    last_name = CharField(max_length=100)  # фамилия
+    departament = CharField(max_length=100)  # подразделение
 
 
 class Visits(BaseModel):
-    ''' jhjh'''
-    id = AutoField()
-    application = ForeignKeyField(Applications, backref='visits')
-    visit_time = DateTimeField()
-    check_in = DateTimeField(null=True)
-    chech_out = DateTimeField(null=True)
+    ''' посещения'''
+    id = AutoField()  # id
+    application = ForeignKeyField(Applications, backref='visits')  # id заявки
+    visit_time = DateTimeField()  # время посещения
+    check_in = DateTimeField(null=True)  # время входа
+    chech_out = DateTimeField(null=True)  # время выхода
 
 
 class Passes(BaseModel):
-    ''' jkkj'''
-    id = AutoField()
-    applications = ForeignKeyField(Applications, backref='passes')
-    issue_date = DateField()
-    expiry_data = DateField()
+    ''' пропуска '''
+    id = AutoField()  # id
+    applications = ForeignKeyField(Applications, backref='passes')  # id заявки
+    issue_date = DateField()  # дата выдачи
+    expiry_data = DateField()  # дата окончания выдачи пропуска
     status = CharField(max_length=50, choices=[('Действующий', 'Действующий'),
-                                               ('Истек', 'Истек')])
+                                               ('Истек', 'Истек')])  # статус пропуска
 
 
 db.connect()
