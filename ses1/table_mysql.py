@@ -1,14 +1,15 @@
 ''' Коннект с бд'''
 from peewee import Model, CharField, ForeignKeyField, \
-            DateField, AutoField, DateTimeField
-from playhouse.mysql_ext import MySQLDatabase
+            DateField, AutoField, DateTimeField, MySQLDatabase
+from pydantic import BaseModel, EmailStr
+from passlib.hash import md5_crypt
 
 
 db = MySQLDatabase('avtoriz', user='root', password='lenok',
                    host='localhost', port=3306)
 
 
-class BaseModel(Model):
+class BaseModels(Model):
     '''Базовая модель для всех моделей приложения.'''
 
     class Meta:
@@ -16,7 +17,7 @@ class BaseModel(Model):
         database = db
 
 
-class Guest(BaseModel):
+class Guest(BaseModels):
     '''Класс гости .'''
     id = AutoField()  # id гостя
     first_name = CharField(max_length=100)  # имя
@@ -25,7 +26,7 @@ class Guest(BaseModel):
     phone = CharField(max_length=15)  # телефон
 
 
-class Applications(BaseModel):
+class Applications(BaseModels):
     ''' заявки'''
     id = AutoField()  # id
     guest = ForeignKeyField(Guest, backref='aplications', on_delete='CASCADE')  # id гостя
@@ -36,7 +37,7 @@ class Applications(BaseModel):
     visit_date = DateField()  # дата посещения
 
 
-class Employees(BaseModel):
+class Employees(BaseModels):
     ''' Сотрудники'''
     id = AutoField()  # id
     first_name = CharField(max_length=100)  # имя
@@ -44,7 +45,7 @@ class Employees(BaseModel):
     departament = CharField(max_length=100)  # подразделение
 
 
-class Visits(BaseModel):
+class Visits(BaseModels):
     ''' посещения'''
     id = AutoField()  # id
     application = ForeignKeyField(Applications, backref='visits', on_delete='CASCADE')  # id заявки
@@ -53,7 +54,7 @@ class Visits(BaseModel):
     chech_out = DateTimeField(null=True)  # время выхода
 
 
-class Passes(BaseModel):
+class Passes(BaseModels):
     ''' пропуска '''
     id = AutoField()  # id
     applications = ForeignKeyField(Applications, backref='passes', on_delete='CASCADE')  # id заявки
@@ -63,6 +64,24 @@ class Passes(BaseModel):
                                                ('Истек', 'Истек')])  # статус пропуска
 
 
+class User(BaseModels):
+    ''' класс для регистрации пользователя'''
+    id = AutoField()  # id
+    email = CharField(unique=True)
+    password = CharField()
+
+
+class UserCreate(BaseModel):
+    ''' регистрация'''
+    email: EmailStr
+    password: str
+
+
+def hash_password(password: str) -> str:
+    ''' хеширование'''
+    return md5_crypt.hash(password)
+
+
 db.connect()
-db.create_tables([Guest, Applications, Employees, Visits, Passes], safe=True)
+db.create_tables([Guest, Applications, Employees, Visits, Passes, User], safe=True)
 db.close()

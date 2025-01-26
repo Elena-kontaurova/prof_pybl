@@ -1,7 +1,11 @@
 ''' kjkj'''
 from datetime import date, datetime
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from metod import MetodGuest, MetodApplication, MetodEmployees, MetodVisits, MetodPasses
+from table_mysql import User, UserCreate, hash_password
+from passlib.hash import md5_crypt
+from peewee import DoesNotExist
+
 
 app = FastAPI()
 
@@ -174,3 +178,35 @@ async def update_pas(pas_id: int, applications: int, issue_date: date,
 async def delete_pas(pas_id: int):
     ''' удаление пропуска'''
     return MetodPasses.delete_passes(pas_id=pas_id)
+
+
+@app.post('/reqister')
+async def register_users(user: UserCreate):
+    ''' РЕГИСТРАЦИЯ ПОЛЬЗОВАТЕЛЯ'''
+    if (
+        len(user.password) < 8
+        or not any(c.islower for c in user.password)
+        or not any(c.isupper for c in user.password)
+        or not any(c.isdigit for c in user.password)
+        or not any(c in '!@#$%^&*()-_+=' for c in user.password)
+    ):
+        raise HTTPException(status_code=400, detail="Пароль должен быть не мение 8 символов, \
+                            использоваться верхний и нижный регистр, специсивол, цифра.")
+    try:
+        user = User.create(email=user.email, password=hash_password(user.password))
+        return {"msg": "Пользователь успешно зарегестрирован", "user_id": user.id}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail='Email уже сузествует') from e
+
+
+@app.post('/login')
+async def login_users(user: UserCreate):
+    ''' вход пользователь'''
+    try:
+        users = User.get(User.email == user.email)
+        if md5_crypt.verify(user.password, users.password):
+            return {"msg": "Успешный вход"}
+        else:
+            raise DoesNotExist(status_code=404, detail="Неверный пароль.")
+    except Exception as e:
+        raise HTTPException(status_code=404, detail='Пользователь не найден') from e
