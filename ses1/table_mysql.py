@@ -28,7 +28,7 @@ class Guest(BaseModel):
 class Applications(BaseModel):
     ''' заявки'''
     id = AutoField()  # id
-    guest = ForeignKeyField(Guest, backref='aplications')  # id гостя
+    guest = ForeignKeyField(Guest, backref='aplications', on_delete='CASCADE')  # id гостя
     apllication_date = DateField()  # дата подачи заявки
     status = CharField(max_length=15, choices=[('Подана', 'Подана'),
                                                ('Обработанна', 'Обработанна'),
@@ -47,7 +47,7 @@ class Employees(BaseModel):
 class Visits(BaseModel):
     ''' посещения'''
     id = AutoField()  # id
-    application = ForeignKeyField(Applications, backref='visits')  # id заявки
+    application = ForeignKeyField(Applications, backref='visits', on_delete='CASCADE')  # id заявки
     visit_time = DateTimeField()  # время посещения
     check_in = DateTimeField(null=True)  # время входа
     chech_out = DateTimeField(null=True)  # время выхода
@@ -56,7 +56,7 @@ class Visits(BaseModel):
 class Passes(BaseModel):
     ''' пропуска '''
     id = AutoField()  # id
-    applications = ForeignKeyField(Applications, backref='passes')  # id заявки
+    applications = ForeignKeyField(Applications, backref='passes', on_delete='CASCADE')  # id заявки
     issue_date = DateField()  # дата выдачи
     expiry_data = DateField()  # дата окончания выдачи пропуска
     status = CharField(max_length=50, choices=[('Действующий', 'Действующий'),

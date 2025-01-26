@@ -1,6 +1,7 @@
 ''' kjkj'''
+from datetime import date, datetime
 from fastapi import FastAPI
-from metod import MetodGuest
+from metod import MetodGuest, MetodApplication, MetodEmployees, MetodVisits, MetodPasses
 
 app = FastAPI()
 
@@ -37,3 +38,139 @@ async def update_guests_num(gue_id: int, first_name: str, last_name: str,
 async def delete_guests(guest_id: int):
     ''' удаление пользователя'''
     return MetodGuest.delete_guest(guest_id)
+
+
+@app.get('/applications')
+async def get_applications():
+    ''' получение всех заявок'''
+    return MetodApplication.get_all_application()
+
+
+@app.get('/applications/{applic_id}')
+async def get_num_aplica(applic_id: int):
+    ''' получение заявки по id'''
+    return MetodApplication.get_number_application(applic_id)
+
+
+@app.post('/applications')
+async def create_aplic(guest: int, apllication_date: date,
+                       status: str, visit_date: date):
+    ''' создание заявки'''
+    return MetodApplication.create_application(guest=guest, apllication_date=apllication_date,
+                                               status=status, visit_date=visit_date)
+
+
+@app.put('/application/{aplic_id}')
+async def update_aplic(aplic_id: int, guest: int, apllication_date: date,
+                       status: str, visit_date: date):
+    ''' обновление записи'''
+    return MetodApplication.upddate_application(aplic_id=aplic_id, guest=guest,
+                                                apllication_date=apllication_date,
+                                                status=status, visit_date=visit_date)
+
+
+@app.delete('/application/{aplic_id}')
+async def delete_aplic(aplic_id: int):
+    ''' удаление записи'''
+    return MetodApplication.delete_application(aplic_id=aplic_id)
+
+
+@app.get('/employees')
+async def get_employees():
+    ''' получение всех сотрудиков'''
+    return MetodEmployees.get_all_employ()
+
+
+@app.get('/employees/{employ_id}')
+async def num_get_emply(employ_id: int):
+    ''' получение сотрудника по id'''
+    return MetodEmployees.get_num_employ(employ_id=employ_id)
+
+
+@app.post('/employees')
+async def create_employees(first_name: str, last_name: str, departament: str):
+    ''' создание нового сотрудника'''
+    return MetodEmployees.create_employ(first_name=first_name, last_name=last_name,
+                                        departament=departament)
+
+
+@app.put('/employees/{eploy_id}')
+async def update_employees(eploy_id: int, first_name: str, last_name: str,
+                           departament: str):
+    ''' обновление пользователя'''
+    return MetodEmployees.update_emply(eploy_id=eploy_id, first_name=first_name,
+                                       last_name=last_name, departament=departament)
+
+
+@app.delete('/employees/{eploy_id}')
+async def delete_employees(eploy_id: int):
+    ''' удаление пользователя'''
+    return MetodEmployees.delete_employ(eploy_id=eploy_id)
+
+
+@app.get('/visits')
+async def get_visits():
+    ''' получение всех визитов'''
+    return MetodVisits.get_all_visit()
+
+
+@app.get('/visits/{visit_id}')
+async def get_num_visit(visit_id):
+    ''' получение визитов по id'''
+    return MetodVisits.get_num_visit(visit_id=visit_id)
+
+
+@app.post('/visits')
+async def create_visits(application: int, visit_time: datetime,
+                        check_in: datetime, chech_out: datetime):
+    ''' создание визита'''
+    return MetodVisits.create_visit(application=application, visit_time=visit_time,
+                                    check_in=check_in, chech_out=chech_out)
+
+
+@app.put('/visits/{visit_id}')
+async def update_visits(visit_id: int, application: int, visit_time: datetime,
+                        check_in: datetime, chech_out: datetime):
+    ''' обновление визитов'''
+    return MetodVisits.update_visit(visit_id=visit_id, application=application,
+                                    visit_time=visit_time, check_in=check_in, chech_out=chech_out)
+
+
+@app.delete('/visits/{visit_id}')
+async def delete_visits(visit_id: int):
+    ''' удаление записи о визите'''
+    return MetodVisits.delete_visit(visit_id=visit_id)
+
+
+@app.get('/passes')
+async def get_all_pass():
+    ''' получение всез пропусков'''
+    return MetodPasses.get_all_passes()
+
+
+@app.get('/passes/{pas_id}')
+async def get_number_passes(pas_id):
+    ''' получене пропуска по id'''
+    return MetodPasses.get_num_passes(pas_id=pas_id)
+
+
+@app.post('/passes')
+async def create_pas(applications: int, issue_date: date,
+                     expiry_date: date, status: str):
+    ''' создание нового пропуска'''
+    return MetodPasses.create_passes(applications=applications, issue_date=issue_date,
+                                     expiry_data=expiry_date, status=status)
+
+
+@app.put('/passes/{pus_id}')
+async def update_pas(pas_id: int, applications: int, issue_date: date,
+                     expiry_data: date, status: str):
+    ''' обновление записи пропуска'''
+    return MetodPasses.update_passes(pas_id=pas_id, applications=applications,
+                                     issue_date=issue_date, expiry_data=expiry_data, status=status)
+
+
+@app.delete('/passes/{pus_id}')
+async def delete_pas(pas_id: int):
+    ''' удаление пропуска'''
+    return MetodPasses.delete_passes(pas_id=pas_id)
