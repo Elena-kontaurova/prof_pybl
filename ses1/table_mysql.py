@@ -160,7 +160,7 @@ class VisitorCreate(BaseModel):
 
     @field_validator('birth_date')
     @classmethod
-    def gwt_birth_date(cls, value):
+    def gwt_birth_date(cls, value: date):
         ''' проверка возраста'''
         if (date.today() - value).days < 16 * 365:
             raise ValueError('Возраст должен быть больше 16.')

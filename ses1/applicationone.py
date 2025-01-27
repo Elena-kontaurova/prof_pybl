@@ -84,7 +84,7 @@ async def create_visitor(visitor: VisitorCreate):
         email=visitor.email,
         organization=visitor.organization,
         note=visitor.note,
-        birth_date=visitor.birth_date,
+        birth_dat=visitor.birth_date,
         passport_seria=visitor.passport_seria,
         passport_number=visitor.passport_number,
         photo=visitor.photo
