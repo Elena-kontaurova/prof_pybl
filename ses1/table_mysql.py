@@ -1,8 +1,9 @@
 ''' Коннект с бд'''
-from datetime import datetime
+import re
+from datetime import datetime, date
 from peewee import Model, CharField, ForeignKeyField, \
             DateField, AutoField, DateTimeField, MySQLDatabase, TextField
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_validator
 from passlib.hash import md5_crypt
 
 
@@ -103,6 +104,70 @@ class InfoSkippingOneCreate(BaseModel):
     employee_name: str
 
 
+class Visitor(BaseModels):
+    ''' информация о посетителе'''
+    id = AutoField()
+    last_name = CharField()
+    first_name = CharField()
+    patronymic = CharField(null=True)  # отчество
+    phone = CharField(null=True)
+    email = CharField(unique=True)
+    organization = CharField(null=True)
+    note = TextField()  # примечание
+    birth_dat = DateField()
+    passport_seria = CharField()
+    passport_number = CharField()
+    photo = CharField(null=True)
+
+
+class VisitorCreate(BaseModel):
+    ''' информация о посетителе создание'''
+    last_name: str
+    first_name: str
+    patronymic: str = None
+    phone: str = None
+    email: EmailStr
+    organization: str = None
+    note: str
+    birth_date: date
+    passport_seria: str
+    passport_number: str
+    photo: str = None
+
+    @field_validator('phone')
+    @classmethod
+    def validate_phone(cls, value):
+        ''' валидация номера'''
+        if value and not re.match(r'^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$', value):
+            raise ValueError('Номер в формате "+7 (###) ###-##-##".')
+        return value
+
+    @field_validator('passport_seria')
+    @classmethod
+    def passport_seria(cls, value):
+        '''валидация серии паспорта'''
+        if len(value) != 4:
+            raise ValueError('Серия паспорта должна быть 4 цифры')
+        return value
+
+    @field_validator('passport_number')
+    @classmethod
+    def passport_number(cls, value):
+        '''валидация номеры паспорта'''
+        if len(value) != 6:
+            raise ValueError('Номер паспорта должна быть 6 цифры')
+        return value
+
+    @field_validator('birth_date')
+    @classmethod
+    def birth_date(cls, value):
+        ''' проверка возраста'''
+        if (date.today() - value).days < 16 * 365:
+            raise ValueError('Возраст должен быть больше 16.')
+        return value
+
+
 db.connect()
-db.create_tables([Guest, Applications, Employees, Visits, Passes, User, InfoSkippingOne], safe=True)
+db.create_tables([Guest, Applications, Employees, Visits, Passes, User, InfoSkippingOne,
+                  Visitor], safe=True)
 db.close()

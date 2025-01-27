@@ -2,10 +2,10 @@
 from datetime import date, datetime
 from fastapi import FastAPI, HTTPException
 from metod import MetodGuest, MetodApplication, MetodEmployees, MetodVisits, MetodPasses
-from table_mysql import User, UserCreate, hash_password, InfoSkippingOneCreate
+from table_mysql import User, UserCreate, hash_password, InfoSkippingOneCreate, VisitorCreate
 from passlib.hash import md5_crypt
 from peewee import DoesNotExist
-from applicationone import process_application
+from applicationone import process_application, create_visitor
 
 
 app = FastAPI()
@@ -220,3 +220,9 @@ async def create_application(application: InfoSkippingOneCreate, user_email: str
         return await process_application(application, user_email)
     except HTTPException as e:
         raise e
+
+
+@app.post("/visitors")
+async def create_visitor_handler(visitor: VisitorCreate):
+    ''' информация о пользователе - один'''
+    return await create_visitor(visitor)
