@@ -144,7 +144,7 @@ class VisitorCreate(BaseModel):
 
     @field_validator('passport_seria')
     @classmethod
-    def passport_seria(cls, value):
+    def get_passport_seria(cls, value):
         '''валидация серии паспорта'''
         if len(value) != 4:
             raise ValueError('Серия паспорта должна быть 4 цифры')
@@ -152,7 +152,7 @@ class VisitorCreate(BaseModel):
 
     @field_validator('passport_number')
     @classmethod
-    def passport_number(cls, value):
+    def get_passport_number(cls, value):
         '''валидация номеры паспорта'''
         if len(value) != 6:
             raise ValueError('Номер паспорта должна быть 6 цифры')
@@ -160,7 +160,7 @@ class VisitorCreate(BaseModel):
 
     @field_validator('birth_date')
     @classmethod
-    def birth_date(cls, value):
+    def gwt_birth_date(cls, value):
         ''' проверка возраста'''
         if (date.today() - value).days < 16 * 365:
             raise ValueError('Возраст должен быть больше 16.')
