@@ -1,6 +1,7 @@
 ''' Коннект с бд'''
+from datetime import datetime
 from peewee import Model, CharField, ForeignKeyField, \
-            DateField, AutoField, DateTimeField, MySQLDatabase
+            DateField, AutoField, DateTimeField, MySQLDatabase, TextField
 from pydantic import BaseModel, EmailStr
 from passlib.hash import md5_crypt
 
@@ -82,6 +83,26 @@ def hash_password(password: str) -> str:
     return md5_crypt.hash(password)
 
 
+class InfoSkippingOne(BaseModels):
+    ''' информация для пропуска - один'''
+    id = AutoField()
+    user = ForeignKeyField(User, backref='application', on_delete='CASCADE')
+    start_date = DateTimeField()
+    end_date = DateTimeField()
+    purpose = TextField()
+    division = CharField()  # подразделение для посещения
+    employee_name = CharField()  # фио сотрудника
+
+
+class InfoSkippingOneCreate(BaseModel):
+    ''' получение информация для пропуска - один'''
+    start_date: datetime
+    end_date: datetime
+    purpose: str
+    division: str
+    employee_name: str
+
+
 db.connect()
-db.create_tables([Guest, Applications, Employees, Visits, Passes, User], safe=True)
+db.create_tables([Guest, Applications, Employees, Visits, Passes, User, InfoSkippingOne], safe=True)
 db.close()

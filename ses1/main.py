@@ -2,9 +2,10 @@
 from datetime import date, datetime
 from fastapi import FastAPI, HTTPException
 from metod import MetodGuest, MetodApplication, MetodEmployees, MetodVisits, MetodPasses
-from table_mysql import User, UserCreate, hash_password
+from table_mysql import User, UserCreate, hash_password, InfoSkippingOneCreate
 from passlib.hash import md5_crypt
 from peewee import DoesNotExist
+from applicationone import process_application
 
 
 app = FastAPI()
@@ -210,3 +211,12 @@ async def login_users(user: UserCreate):
             raise DoesNotExist(status_code=404, detail="Неверный пароль.")
     except Exception as e:
         raise HTTPException(status_code=404, detail='Пользователь не найден') from e
+
+
+@app.post("/infoskippingonecreate")
+async def create_application(application: InfoSkippingOneCreate, user_email: str):
+    ''' информация для пропуска - один'''
+    try:
+        return await process_application(application, user_email)
+    except HTTPException as e:
+        raise e
