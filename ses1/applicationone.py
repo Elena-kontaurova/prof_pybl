@@ -90,4 +90,4 @@ async def create_visitor(visitor: VisitorCreate):
         photo=visitor.photo
     )
 
-    return {"msg": "Данные усешно добавленный", "visitor_id": visitor_data.id}
+    return {"msg": "Данные успешно добавленный", "visitor_id": visitor_data.id}
