@@ -1,0 +1,69 @@
+класс Guest
+ - id 
+ - first_name - фамилия - str - иванок
+ - las_name - имя - str - иван
+ - email - почта - str - konataue@mail.ru
+ - phone - телефлг - str -888 888 8888
+ 
+класс Application
+- id
+- guest - id гостя - int - 1
+- application_date - дата подачи заявки - date - 2024.01.01
+- status - статус заявки - str - Одобрена
+
+класс Employees
+- id
+- first_name - имя - str - Лена
+- Last_name - фамилия - str - Контраурова
+- departament - подразделение - str - Охрана
+
+класс Visits
+- id
+- application - id заявки
+- visit_time = время посещения - date
+- chech_in - время входа - date - 2025.01.01
+- chech_out - время выхода - date - 2025.01.01
+
+класс Passes
+- id
+- application - id заявки
+- issue_date = дата выдачи - date
+- expiry_data - дата окончание пропуска - date
+- status - статус - str - Истек
+
+класс User
+- id
+ - email - почта - str - konataue@mail.ru
+- password - пароль - str - Lks733zz!
+
+класс InfoSkippingOne
+- id
+- user - id пользователя - int
+- start_date - заявкна на начало - date - 2025.01.01
+- end_date - заявка на окончание - date - 2024.10.01
+- purpose - цель визита - str - просто
+- divicion - подразделение для посещения - str - Охрана
+- employee_name - фио сотрудника- str - картов
+
+класс Visitor
+- id 
+- last_name - str - фамилия
+- first_name - str - имя
+- patronymic - str - отчетсво
+- phone - str - телефон
+- email - str - почта
+- organization - str - организация
+- note - str - примечание
+- birth_dat - date - дата рождения
+- passport_seria - str - серия пасспорта
+- passport_number - str - номер пасспорта
+- photo - str - фото
+
+класс InfoSkippingGroup
+- id = AutoField()
+- user - id user
+- start_date - date - начало даты
+- end_date - dae=te - конец даты
+- purpose - цель визита - date
+- division - str - подразделение
+- employee_name - str - фио сотрудника
